@@ -5,7 +5,7 @@ An application which parses and evaluates mathematical expressions.
 Supports build-in functions and user-defined variables. Implemented using a client-server model.  
 
 It is written in *C#* and uses *WCF* for communication and *WPF* for the GUI.  
-Uses the *Shunting-yard algorithm* to parser the mathematical expressions.
+Uses the [Shunting-yard algorithm](http://en.wikipedia.org/wiki/Shunting-yard_algorithm) to parse the mathematical expressions.
 
 Role of each component:  
 - *MathParserLib*: implements the math expression parsing and evaluation functionality.  
