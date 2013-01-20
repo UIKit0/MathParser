@@ -16,6 +16,6 @@ Role of each component:
 The following video demonstrates the use of the client application:  
 [Video demonstration](http://youtu.be/7wdAIWGz_kA)  
 
-Screenshots:  
+**Screenshots:**
 
 ![SmartFlip screenshot](http://www.gratianlup.com/documents/math_parser_1.PNG)  
