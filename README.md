@@ -14,7 +14,7 @@ Role of each component:
 - *ParserClient*: connects to the service and sends math expression for evaluation.  
 
 The following video demonstrates the use of the client application:  
-**[View video demonstration](http://youtu.be/7wdAIWGz_kA)**  
+**[View demonstration video](http://youtu.be/7wdAIWGz_kA)**  
 
 **Screenshots:**
 
