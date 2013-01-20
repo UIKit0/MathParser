@@ -13,7 +13,7 @@ Role of each component:
 - *ParserServiceHost*: hosts the service and waits for clients to connect.  
 - *ParserClient*: connects to the service and sends math expression for evaluation.  
 
-The following video demonstrates the use of the client application:
+The following video demonstrates the use of the client application:  
 [Video demonstration](http://youtu.be/7wdAIWGz_kA)  
 
 ![SmartFlip screenshot](http://www.gratianlup.com/documents/math_parser_1.PNG)  
