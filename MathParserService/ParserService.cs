@@ -33,14 +33,14 @@ using MathParserLib;
 namespace MathParserService {
     public class ParserService : IParserService {
         private void InitializeParser(MathParser parser) {
-            // adauga operatorii
+            // Add the available operators.
             parser.AddOperator(new AddOperator());
             parser.AddOperator(new SubstractOperator());
             parser.AddOperator(new MultiplyOperator());
             parser.AddOperator(new DivideOperator());
             parser.AddOperator(new ExponentialOperator());
 
-            // adauga functiile
+            // Add the available functions.
             parser.AddFunction(new SinFunction());
             parser.AddFunction(new CosFunction());
             parser.AddFunction(new TanFunction());
@@ -56,13 +56,12 @@ namespace MathParserService {
             parser.AddFunction(new CeilFunction());
             parser.AddFunction(new FloorFunction());
 
-            // adauga variabilele
+            // Add the available constants.
             parser.AddVariable("PI", Math.PI);
             parser.AddVariable("E", Math.E);
         }
 
         public ParseError EvaluateExpression(string expression, List<VariableInfo> variables, out double result) {
-            // validate parameters
             if(string.IsNullOrEmpty(expression)) {
                 throw new ArgumentNullException("Expression was not defined.");
             }
@@ -72,12 +71,12 @@ namespace MathParserService {
             try {
                 MathParser parser = new MathParser();
 
-                // add variables
+                // Add the received variables before starting the evaluation.
                 foreach(VariableInfo varInfo in variables) {
                     parser.Variables.Add(varInfo.Name, varInfo.Value);
                 }
 
-                // compute the result
+                // Parse and evalute the received expression.
                 InitializeParser(parser);
                 parser.BuildExpression(expression);
                 result = parser.Evaluate();

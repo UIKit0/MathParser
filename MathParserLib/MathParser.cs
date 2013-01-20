@@ -29,7 +29,8 @@ using System.Text;
 
 namespace MathParserLib {
     /// <summary>
-    /// Contine informatii despre o expresie (functie, variabila, operator).
+    /// Contains information about a parsed expression element 
+    /// (function, variable or operator).
     /// </summary>
     class ExpressionStackItem {
         public IMathExpression Expression;
@@ -49,7 +50,7 @@ namespace MathParserLib {
 
 
     /// <summary>
-    /// Contine informatii despre o expresie aflata pe stiva (temporara) de operatori.
+    // Contains information about an expression found on the operator stack.
     /// </summary>
     class OperatorStackItem {
         public IMathExpression Expression;
@@ -67,7 +68,7 @@ namespace MathParserLib {
 
 
     /// <summary>
-    /// Elementul care a generat eroarea.
+    /// Defines the type of elements that can generate parsing errors.
     /// </summary>
     [Serializable]
     public enum TargetType {
@@ -81,7 +82,7 @@ namespace MathParserLib {
 
 
     /// <summary>
-    /// Reprezinta o eroare care a avut loc in timpul parcurgerii expresiei.
+    /// Describes an error that appeared during expression parsing.
     /// </summary>
     [Serializable]
     public class ParseError {
@@ -94,7 +95,10 @@ namespace MathParserLib {
         }
     }
 
-
+    /// <summary>
+    /// Describes an expection thrown because the parsed expression is invalid.
+    /// </summary>
+    [Serializable]
     public class ParseException : Exception {
         private ParseError _error;
         public ParseError Error {
@@ -111,7 +115,8 @@ namespace MathParserLib {
 
 
     /// <summary>
-    /// Implementeaza evaluarea unei expresii.
+    /// Implements the math expression parsing and evaluation.
+    /// Based on the Shunting-yard algorithm.
     /// </summary>
     public class MathParser {
         #region Constants
@@ -129,7 +134,7 @@ namespace MathParserLib {
         private Dictionary<string, MathFunction> _functions;
         private Dictionary<string, double> _variables;
         private List<ParseError> _errors;
-        private Stack<ExpressionStackItem> expressionStack; // stiva cu expresii
+        private Stack<ExpressionStackItem> expressionStack;
 
         #endregion
 
@@ -171,7 +176,7 @@ namespace MathParserLib {
         #region Private methods
 
         /// <summary>
-        /// Elimina toate spatiile dintr-o expresie.
+        /// Removes all white-space characters from a string.
         /// </summary>
         private string RemoveSpaces(string expression) {
             StringBuilder builder = new StringBuilder();
@@ -199,76 +204,76 @@ namespace MathParserLib {
         }
 
         /// <summary>
-        /// Verifica daca cuvantul gasit este un numar. Suporta semnele + si -.
+        /// Checks if the specified words represents a valid number.
+        /// Allows both integer and floating numbers, including the ones
+        /// which start with the + or - symbols.
         /// </summary>
         private bool IsNumber(string word) {
             int length = word.Length;
+
             for(int i = 0; i < length; i++) {
                 char c = word[i];
-                if((char.IsDigit(c) == false) && (c != '.') && (IsOperator(c) == false)) return false; // nu este numar
+
+                if((c != '.') &&
+                   (char.IsDigit(c) == false) &&
+                   (IsOperator(c) == false)) {
+                    // Definitely not a valid number.
+                    return false;
+                }
             }
 
             return true;
         }
 
         /// <summary>
-        /// Determina tipul cuvantului gasit (functie, variabila sau numar).
+        /// Determines the type of the word in the expression.
         /// </summary>
-        /// <param name="word"></param>
-        /// <param name="nextChar"></param>
-        /// <param name="isFunction"></param>
-        /// <returns></returns>
         private ExpressionStackItem ParseWord(string word, char nextChar, out bool isFunction) {
-            isFunction = false; // presupunem ca nu-i functie
+            isFunction = false;
 
             if(nextChar == OpenBracket) {
-                // doar functiile pot avea paranteza '('
+                // ( means that a function call starts.
                 if(IsFunction(word)) {
                     isFunction = true;
                     return new ExpressionStackItem(_functions[word]);
                 }
                 else {
-                    // functia nu este definita
+                    // The function could not be found, report the error.
                     _errors.Add(new ParseError(TargetType.Function, word));
                     throw new ParseException(_errors[_errors.Count - 1]);
                 }
             }
             else if(IsNumber(word)) {
                 double number;
+
                 if(double.TryParse(word, out number)) {
-                    // numarul este valid
                     return new ExpressionStackItem(null, number, true /* evaluated */);
                 }
                 else {
-                    // numarul nu este valid
+                    // The number is invalid, report the error.
                     _errors.Add(new ParseError(TargetType.Number, word));
                     throw new ParseException(_errors[_errors.Count - 1]);
                 }
             }
             else {
                 if(IsVariable(word)) {
-                    // este o variabila
                     return new ExpressionStackItem(null, _variables[word], true /* evaluated */);
                 }
                 else {
-                    // variabia nu este definita
+                    // The variable could not be found, report the error.
                     _errors.Add(new ParseError(TargetType.Variable, word));
                     throw new ParseException(_errors[_errors.Count - 1]);
                 }
             }
-
-            System.Diagnostics.Debug.Assert(false); // nu ar trebui sa ajunga aici!
         }
 
-        void Test() { }
-
         /// <summary>
-        /// Adauga un operator in stiva temporara cu operatori.
-        /// Daca este necesar, operatorii vor fi reordonati in functie de prioritate.
+        /// Adds an operator to the operator stack.
+        /// If required, the operators are reordered according to their priority.
         /// </summary>
         private void AddOperator(Stack<OperatorStackItem> operatorStack, char c) {
             if(operatorStack.Count > 0) {
-                // trebuie sa reordonam operatorii
+                // The operands might need to be reordered.
                 OperatorPrecedence prevPrecedence = operatorStack.Peek().Precedence;
                 OperatorPrecedence currentPrecedence;
 
@@ -281,72 +286,67 @@ namespace MathParserLib {
                         if(operatorStack.Count > 0) {
                             prevPrecedence = operatorStack.Peek().Precedence;
                             if(prevPrecedence == OperatorPrecedence.OpenBracket) {
-                                break; // ne oprim daca am dat de paranteza deschisa '('
+                                // Stop when the an open paren ( is found.
+                                break;
                             }
                         }
-                        else break; // nu mai sunt elemente in stiva
+                        else break;
                     }
                 }
             }
 
-            // adauga operatorul in stiva
+            // Add the operator to the stack.
             MathOperator op = _operators[c];
             operatorStack.Push(new OperatorStackItem(op, op.Precedence));
         }
 
         /// <summary>
-        /// Parcurge expresia si o transforma intr-o stiva cu expresii bazate pe forma poloneza postfixata.
+        /// Parses and evaluates the specified expression.
         /// </summary>
         private void ParseExpression(string expression) {
-            bool wasOperator = false; // folosit pt. numere cu semn (- sau +)
+            bool wasOperator = false;
             int operatorCount = 0;
             char currentChar;
             string currentWord = string.Empty;
-            Stack<OperatorStackItem> operatorStack = new Stack<OperatorStackItem>(); // stiva temporara a operatorilor
-
+            Stack<OperatorStackItem> operatorStack = new Stack<OperatorStackItem>();
             int length = expression.Length;
+
             for(int i = 0; i < length; i++) {
                 currentChar = expression[i];
-
                 bool isOperator = IsOperator(currentChar);
+
                 if(isOperator && (wasOperator || i == 0)) {
                     if(operatorCount > 1) {
-                        // nu ar trebui sa fie mai mult de doi operatori consecutivi
+                        // Not enought operands available, report error.
                         _errors.Add(new ParseError(TargetType.Other, string.Empty));
                         throw new ParseException(_errors[_errors.Count - 1]);
                     }
 
-                    // trateaza ca pe un semn (+ sau -)
                     isOperator = false;
                 }
 
-                if(isOperator || (currentChar == OpenBracket) ||
-                                  (currentChar == CloseBracket) ||
-                                  (currentChar == VariableSeparator)) {
-                    // caracter special (operator, paranteza sau separator de variabile in functii)
-
+                if(isOperator || (currentChar == OpenBracket)  ||
+                                 (currentChar == CloseBracket) ||
+                                 (currentChar == VariableSeparator)) {
+                    // A word separator was found, check what the previous word has been.
                     if(string.IsNullOrEmpty(currentWord) == false) {
-                        // inainte a fost un cuvant, trebuie sa-i determinam tipul
                         bool isFunction;
                         ExpressionStackItem exprItem = ParseWord(currentWord, currentChar, out isFunction);
 
                         if(isFunction) {
-                            // adauga in stiva cu operatori
                             operatorStack.Push(new OperatorStackItem(exprItem.Expression, OperatorPrecedence.Function));
                         }
                         else {
-                            // poate fi adaugat direct in stiva cu expresii
                             expressionStack.Push(exprItem);
                         }
 
-                        // reseteaza cuvantul
+                        // Reset the current word.
                         currentWord = string.Empty;
                         wasOperator = false;
                         operatorCount = 0;
                     }
 
                     if(isOperator) {
-                        // adauga operatorul  in stiva
                         AddOperator(operatorStack, currentChar);
                         wasOperator = true;
                         operatorCount++;
@@ -354,13 +354,14 @@ namespace MathParserLib {
                     else if((currentChar == VariableSeparator) ||
                              (currentChar == CloseBracket)) {
                         if(operatorStack.Count > 0) {
-                            // extrage din stiva cu operatori pana intalnim paranteza '('
+                            // Extract all operators until the open paren ( is found.
                             OperatorPrecedence precedence = operatorStack.Peek().Precedence;
+
                             while(precedence != OperatorPrecedence.OpenBracket) {
                                 expressionStack.Push(new ExpressionStackItem(operatorStack.Pop().Expression));
 
                                 if(operatorStack.Count == 0) {
-                                    // paranteza '(' nu a fost gasita
+                                    // The open paren could not be found, report error.
                                     _errors.Add(new ParseError(TargetType.Other, string.Empty));
                                     throw new ParseException(_errors[_errors.Count - 1]);
                                 }
@@ -368,7 +369,7 @@ namespace MathParserLib {
                                 precedence = operatorStack.Peek().Precedence;
                             }
 
-                            // daca avem o paranteza inchisa, sterge-o
+                            // Remove the close paren ) if found.
                             if(currentChar == CloseBracket) {
                                 operatorStack.Pop();
                             }
@@ -378,36 +379,37 @@ namespace MathParserLib {
                         operatorCount = 0;
                     }
                     else if(currentChar == OpenBracket) {
-                        // adauga o paranteza deschisa
+                        // Push the open paren ( to the stack.
                         operatorStack.Push(new OperatorStackItem(OperatorPrecedence.OpenBracket));
                         wasOperator = true;
                         operatorCount++;
                     }
                 }
                 else {
-                    // adauga litera la cuvant
+                    // Extend the current word with the character.
                     currentWord += currentChar;
                     wasOperator = false;
                     operatorCount = 0;
                 }
             }
 
-            // analizeaza ultimul cuvant
+            // Check the type of the last word.
             if(string.IsNullOrEmpty(currentWord) == false) {
                 bool isFunction;
                 expressionStack.Push(ParseWord(currentWord, ' ', out isFunction));
 
                 if(isFunction) {
-                    // expresia nu se poate termina cu o functie (nu are operatori)
+                    // The word should not be a function name, it cannot be followed
+                    // by any other symbol, making it invalid.
                     _errors.Add(new ParseError(TargetType.FunctionVariable, currentWord));
                     throw new ParseException(_errors[_errors.Count - 1]);
                 }
             }
 
-            // extrage operatorii ramasi
+            // Extract the remaining operators.
             while(operatorStack.Count > 0) {
                 if(operatorStack.Peek().Precedence == OperatorPrecedence.OpenBracket) {
-                    // nu ar fi trebuit sa mai ramana paranteze deschise in stiva
+                    // In a valid expression no more open parens should remain.
                     _errors.Add(new ParseError(TargetType.Other, string.Empty));
                     throw new ParseException(_errors[_errors.Count - 1]);
                 }
@@ -433,30 +435,31 @@ namespace MathParserLib {
         }
 
         /// <summary>
-        /// Transforma expresia data in stiva de evaluare.
+        /// Transforms the specified expression string in an expression stack.
         /// </summary>
         public void BuildExpression(string expression) {
-            expression = RemoveSpaces(expression); // sterge spatiile de la inceput/sfarsit
+            expression = RemoveSpaces(expression);
             ParseExpression(expression);
         }
 
         /// <summary>
-        /// Evalueaza expresia din stiva.
+        /// Evaluates the expression found in the epxression stack.
         /// </summary>
         public double Evaluate() {
             ExpressionStackItem item = expressionStack.Pop();
 
-            if(item.IsEvaluated) return item.Value;
+            if(item.IsEvaluated) {
+                return item.Value;
+            }
             else {
                 item.Value = item.Expression.Evaluate(this);
                 item.IsEvaluated = true;
-
                 return item.Value;
             }
         }
 
         /// <summary>
-        /// Folosita de obiecte IMathExpression pentru a extrage valori din stiva.
+        /// Method used by IMathExpression objects to extract operands from the stack.
         /// </summary>
         /// <returns></returns>
         internal double Pop() {

@@ -46,13 +46,12 @@ namespace ParserClient {
 
         public MainWindow() {
             this.InitializeComponent();
-
             userVariables = new List<VariableInfo>();
 
             try {
                 service = new ParserServiceClient();
 
-                // obtine listele cu functii si constante
+                // Get the lists with the built-in functions and constants.
                 FunctionInfo[] functions = service.GetAvailableFunctions();
                 FunctionsListView.ItemsSource = functions;
 
@@ -67,7 +66,7 @@ namespace ParserClient {
 
         private void EvaluateButton_Click(object sender, RoutedEventArgs e) {
             if(string.IsNullOrEmpty(ExpressionTextBox.Text.Trim())) {
-                // nu a fost inca definita expresia
+                // The expression has not been defined yet.
                 return;
             }
 
@@ -75,7 +74,7 @@ namespace ParserClient {
                 double result;
                 ParseError error = service.EvaluateExpression(out result, ExpressionTextBox.Text, userVariables.ToArray());
 
-                // verifica rezultatul
+                // Validate the recived result.
                 switch(error.TargetType) {
                     case TargetType.None: {
                             ResultLabel.Text = string.Format("{0:f6}", result);
@@ -165,7 +164,7 @@ namespace ParserClient {
 
         private void NameTextBox_LostFocus(object sender, RoutedEventArgs e) {
             if(currentVariable != null) {
-                // valideaza numele
+                // Validate the variable name.
                 if(string.IsNullOrEmpty(NameTextBox.Text.Trim()) ||
                    ContainsVariable(NameTextBox.Text.Trim(), currentVariable)) {
                     MessageBox.Show("Variable name invalid or already defined!");

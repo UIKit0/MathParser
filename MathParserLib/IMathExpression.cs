@@ -29,7 +29,8 @@ using System.Text;
 
 namespace MathParserLib {
     /// <summary>
-    /// Interfata care trebuie implementata de toate tipurile de expresii (functii, variabile, operatori).
+    /// Interface which must be implemented by all types of expresions
+    /// (functions, variables, operators).
     /// </summary>
     interface IMathExpression {
         string HelpString { get; }

@@ -29,19 +29,19 @@ using System.Text;
 
 namespace MathParserLib {
     /// <summary>
-    /// Prioritatiile operatorilor.
+    /// Defines the operand priorities.
     /// </summary>
     public enum OperatorPrecedence {
-        Add = 1,
-        Multiply = 2,
+        Add         = 1,
+        Multiply    = 2,
         Exponential = 3,
-        Function = 4,
+        Function    = 4,
         OpenBracket = 0
     }
 
 
     /// <summary>
-    /// Clasa din care trebuie sa derive toti operatorii.
+    /// Abstract base class that should be inherited by all operands.
     /// </summary>
     public abstract class MathOperator : IMathExpression {
         public abstract OperatorPrecedence Precedence { get; }
