@@ -1,0 +1,136 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace MathParserLib
+{
+	public class AddOperator : MathOperator
+	{
+		public override OperatorPrecedence Precedence
+		{
+			get { return OperatorPrecedence.Add; }
+		}
+
+		public override char Symbol
+		{
+			get { return '+'; }
+		}
+
+		public override string HelpString
+		{
+			get { return "val1 + val2"; }
+		}
+
+		public override double Evaluate(MathParser parser)
+		{
+			double a = parser.Pop();
+			double b = parser.Pop();
+			return a + b;
+		}
+	}
+
+	// ------------------------------------------------------------------------------------------------------*/
+	public class SubstractOperator : MathOperator
+	{
+		public override OperatorPrecedence Precedence
+		{
+			get { return OperatorPrecedence.Add; }
+		}
+
+		public override char Symbol
+		{
+			get { return '-'; }
+		}
+
+		public override string HelpString
+		{
+			get { return "val1 - val2"; }
+		}
+
+		public override double Evaluate(MathParser parser)
+		{
+			double a = parser.Pop();
+			double b = parser.Pop();
+			return b - a;
+		}
+	}
+
+	// ------------------------------------------------------------------------------------------------------*/
+	public class MultiplyOperator : MathOperator
+	{
+		public override OperatorPrecedence Precedence
+		{
+			get { return OperatorPrecedence.Multiply; }
+		}
+
+		public override char Symbol
+		{
+			get { return '*'; }
+		}
+
+		public override string HelpString
+		{
+			get { return "val1 * val2"; }
+		}
+
+		public override double Evaluate(MathParser parser)
+		{
+			double a = parser.Pop();
+			double b = parser.Pop();
+			return b * a;
+		}
+	}
+
+	// ------------------------------------------------------------------------------------------------------*/
+	public class DivideOperator : MathOperator
+	{
+		public override OperatorPrecedence Precedence
+		{
+			get { return OperatorPrecedence.Multiply; }
+		}
+
+		public override char Symbol
+		{
+			get { return '/'; }
+		}
+
+		public override string HelpString
+		{
+			get { return "val1 / val2"; }
+		}
+
+		public override double Evaluate(MathParser parser)
+		{
+			double a = parser.Pop();
+			double b = parser.Pop();
+			return b / a;
+		}
+	}
+
+	// ------------------------------------------------------------------------------------------------------*/
+	public class ExponentialOperator : MathOperator
+	{
+		public override OperatorPrecedence Precedence
+		{
+			get { return OperatorPrecedence.Exponential; }
+		}
+
+		public override char Symbol
+		{
+			get { return '^'; }
+		}
+
+		public override string HelpString
+		{
+			get { return "val1 ^ val2"; }
+		}
+
+		public override double Evaluate(MathParser parser)
+		{
+			double a = parser.Pop();
+			double b = parser.Pop();
+			return Math.Pow(b, a);
+		}
+	}
+}
