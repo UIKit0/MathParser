@@ -85,35 +85,35 @@ namespace ParserClient {
                 // Validate the recived result.
                 switch(error.TargetType) {
                     case TargetType.None: {
-                            ResultLabel.Text = string.Format("{0:f6}", result);
-                            ResultLabel.FontSize = 48;
-                            break;
-                        }
+                        ResultLabel.Text = string.Format("{0:f6}", result);
+                        ResultLabel.FontSize = 48;
+                        break;
+                    }
                     case TargetType.Function: {
-                            ResultLabel.Text = "Function '" + error.Target + "' could not be found.";
-                            ResultLabel.FontSize = 24;
-                            break;
-                        }
+                        ResultLabel.Text = "Function '" + error.Target + "' could not be found.";
+                        ResultLabel.FontSize = 24;
+                        break;
+                    }
                     case TargetType.Number: {
-                            ResultLabel.Text = "Invalid number: " + error.Target;
-                            ResultLabel.FontSize = 24;
-                            break;
-                        }
+                        ResultLabel.Text = "Invalid number: " + error.Target;
+                        ResultLabel.FontSize = 24;
+                        break;
+                    }
                     case TargetType.Variable: {
-                            ResultLabel.Text = "Variable '" + error.Target + "' could not be found.";
-                            ResultLabel.FontSize = 24;
-                            break;
-                        }
+                        ResultLabel.Text = "Variable '" + error.Target + "' could not be found.";
+                        ResultLabel.FontSize = 24;
+                        break;
+                    }
                     case TargetType.FunctionVariable: {
-                            ResultLabel.Text = "Function '" + error.Target + "' doesn't have operators.";
-                            ResultLabel.FontSize = 24;
-                            break;
-                        }
+                        ResultLabel.Text = "Function '" + error.Target + "' doesn't have operators.";
+                        ResultLabel.FontSize = 24;
+                        break;
+                    }
                     case TargetType.Other: {
-                            ResultLabel.Text = "Invalid expression!";
-                            ResultLabel.FontSize = 24;
-                            break;
-                        }
+                        ResultLabel.Text = "Invalid expression!";
+                        ResultLabel.FontSize = 24;
+                        break;
+                    }
                 }
             }
             catch(Exception ex) {
@@ -154,6 +154,7 @@ namespace ParserClient {
         private void ValueTextBox_LostFocus(object sender, RoutedEventArgs e) {
             if(currentVariable != null) {
                 double value;
+                
                 if(double.TryParse(ValueTextBox.Text.Trim(), out value)) {
                     currentVariable.Value = value;
                     VariablesListView.ItemsSource = null;
@@ -203,9 +204,7 @@ namespace ParserClient {
         }
 
         private void ExpressionTextBox_KeyDown(object sender, KeyEventArgs e) {
-            if(e.Key == Key.Enter) {
-
-            }
+            // Unused yet.
         }
 
         private void VariablesListView_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
