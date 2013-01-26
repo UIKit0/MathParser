@@ -11,7 +11,7 @@ Role of each component:
 - *MathParserLib*: implements the math expression parsing and evaluation functionality.  
 - *MathParserService*: exposes the functionality as a *WCF* service.  
 - *ParserServiceHost*: hosts the service and waits for clients to connect.  
-- *ParserClient*: connects to the service and sends math expression for evaluation.  
+- *ParserClient*: GUI which connects to the service and sends math expression for evaluation.  
 
 The following video demonstrates the use of the client application:  
 **[View demonstration video](http://youtu.be/7wdAIWGz_kA)**  
