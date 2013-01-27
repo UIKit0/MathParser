@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParserClient", "ParserClient\ParserClient.csproj", "{446E8B6C-E4DC-46E9-9F68-254B5F748663}"
 EndProject
 Global
@@ -13,5 +13,8 @@ Global
 		{446E8B6C-E4DC-46E9-9F68-254B5F748663}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{446E8B6C-E4DC-46E9-9F68-254B5F748663}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{446E8B6C-E4DC-46E9-9F68-254B5F748663}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal

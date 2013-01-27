@@ -1,4 +1,4 @@
-// Copyright (c) Gratian Lup. All rights reserved.
+// Copyright (c) 2009 Gratian Lup. All rights reserved.
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
 // met:
@@ -80,8 +80,8 @@ namespace ParserClient {
 
             try {
                 double result;
-                ParseError error = service.EvaluateExpression(out result, ExpressionTextBox.Text, userVariables.ToArray());
-
+                ParseError error = service.EvaluateExpression(out result, ExpressionTextBox.Text, 
+                                                              userVariables.ToArray());
                 // Validate the recived result.
                 switch(error.TargetType) {
                     case TargetType.None: {
@@ -130,7 +130,8 @@ namespace ParserClient {
         }
 
         private void RemoveButtoon_Click(object sender, RoutedEventArgs e) {
-            if(VariablesListView.SelectedIndex >= 0 && VariablesListView.SelectedIndex < userVariables.Count) {
+            if(VariablesListView.SelectedIndex >= 0 && 
+               VariablesListView.SelectedIndex < userVariables.Count) {
                 userVariables.RemoveAt(VariablesListView.SelectedIndex);
                 VariablesListView.ItemsSource = null;
                 VariablesListView.ItemsSource = userVariables;

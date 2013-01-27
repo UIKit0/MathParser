@@ -1,4 +1,4 @@
-// Copyright (c) Gratian Lup. All rights reserved.
+// Copyright (c) 2009 Gratian Lup. All rights reserved.
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
 // met:
@@ -69,7 +69,8 @@ namespace MathParserService {
             parser.AddVariable("E", Math.E);
         }
 
-        public ParseError EvaluateExpression(string expression, List<VariableInfo> variables, out double result) {
+        public ParseError EvaluateExpression(string expression, List<VariableInfo> variables, 
+                                             out double result) {
             if(string.IsNullOrEmpty(expression)) {
                 throw new ArgumentNullException("Expression was not defined.");
             }
@@ -105,7 +106,8 @@ namespace MathParserService {
             InitializeParser(parser);
 
             foreach(KeyValuePair<string, double> kvp in parser.Variables) {
-                list.Add(new VariableInfo() { Value = kvp.Value, Name = kvp.Key });
+                list.Add(new VariableInfo() { Value = kvp.Value,
+                                              Name = kvp.Key });
             }
 
             return list;
@@ -117,7 +119,8 @@ namespace MathParserService {
             InitializeParser(parser);
 
             foreach(KeyValuePair<string, MathFunction> kvp in parser.Functions) {
-                list.Add(new FunctionInfo() { HelpString = kvp.Value.HelpString, Name = kvp.Key });
+                list.Add(new FunctionInfo() { HelpString = kvp.Value.HelpString, 
+                                              Name = kvp.Key });
             }
 
             return list;
@@ -129,7 +132,8 @@ namespace MathParserService {
             InitializeParser(parser);
 
             foreach(KeyValuePair<char, MathOperator> kvp in parser.Operators) {
-                list.Add(new OperatorInfo() { HelpString = kvp.Value.HelpString, Symbol = kvp.Key });
+                list.Add(new OperatorInfo() { HelpString = kvp.Value.HelpString, 
+                                              Symbol = kvp.Key });
             }
 
             return list;
